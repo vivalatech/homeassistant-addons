@@ -4,7 +4,7 @@ import random
 from io import BytesIO
 from typing import List, Tuple, Optional, Dict
 
-folder_path = 'frame'
+folder_path = '/media/frame'
 
 def get_media_folder_images() -> List[str]:
     """Get a list of JPG/PNG files in the folder, and search recursively if you want to use subdirectories"""

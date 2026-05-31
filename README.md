@@ -20,6 +20,8 @@ Looks for images in the /media/frame folder and randomly pushes an image to your
 
 Please note you must upload pictures with a lower-case extension and only .png and .jpg are supported.
 
+If `/media/frame/selected_frame_art.jpg` exists, the add-on will upload that file instead of choosing a random image. This makes it possible for a Home Assistant dashboard, script, or shell command to stage one exact local artwork before starting the add-on. If that file is not present, the normal random local-media behavior is used.
+
 
 ## Installation
 

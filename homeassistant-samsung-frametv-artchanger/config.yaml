@@ -1,6 +1,6 @@
 name: "Samsung Frame TV Art Changer"
 description: "Automatically downloads and displays artwork on your Samsung Frame TV from Google Art, Bing Wallpapers, or your local media folder."
-version: "1.0.4"
+version: "1.1.0"
 url: "https://github.com/vivalatech/homeassistant-addons"
 slug: "hass-frametv-artchanger"
 init: false
@@ -20,6 +20,8 @@ options:
   download_high_res: true
   bing_wallpapers: false
   media_folder: false
+  openverse: false
+  aic_abstract: false
   same_image: false
 schema:
   tv: "str?"
@@ -27,5 +29,7 @@ schema:
   download_high_res: "bool?"
   bing_wallpapers: "bool?"
   media_folder: "bool?"
+  openverse: "bool?"
+  aic_abstract: "bool?"
   same_image: "bool?"
 image: vivalatech/{arch}-addon-homeassistant-samsung-frametv-artchanger

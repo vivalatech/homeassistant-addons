@@ -9,7 +9,7 @@ import random
 sys.path.append('../')
 
 from samsungtvws import SamsungTVWS
-from sources import bing_wallpapers, google_art, media_folder
+from sources import bing_wallpapers, google_art, media_folder, openverse, aic_abstract
 from utils.utils import Utils
 
 # Add command line argument parsing
@@ -22,6 +22,8 @@ parser.add_argument('--google-art', action='store_true', help='Download and uplo
 parser.add_argument('--download-high-res', action='store_true', help='Download high resolution image using dezoomify-rs')
 parser.add_argument('--bing-wallpapers', action='store_true', help='Download and upload image from Bing Wallpapers')
 parser.add_argument('--media-folder', action='store_true', help='Use images from the local media folder')
+parser.add_argument('--openverse', action='store_true', help='Download and upload a contemporary abstract/illustration image from Openverse')
+parser.add_argument('--aic-abstract', action='store_true', help='Download and upload a public-domain abstract artwork from the Art Institute of Chicago')
 parser.add_argument('--debugimage', action='store_true', help='Save downloaded and resized images for inspection')
 
 args = parser.parse_args()
@@ -46,9 +48,13 @@ if args.google_art:
     sources.append(google_art)
 if args.media_folder:
     sources.append(media_folder)
+if args.openverse:
+    sources.append(openverse)
+if args.aic_abstract:
+    sources.append(aic_abstract)
 
 if not sources:
-    logging.error('No image source specified. Please use --google-art, --bing-wallpapers, or --media-folder')
+    logging.error('No image source specified. Please use --google-art, --bing-wallpapers, --media-folder, --openverse, or --aic-abstract')
     sys.exit(1)
 
 tvip = args.tvip.split(',') if args.tvip else []

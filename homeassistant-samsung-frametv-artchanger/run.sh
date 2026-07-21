@@ -16,6 +16,12 @@ fi
 if bashio::config.true 'media_folder'; then
     PARAMS="${PARAMS} --media-folder"
 fi
+if bashio::config.true 'openverse'; then
+    PARAMS="${PARAMS} --openverse"
+fi
+if bashio::config.true 'aic_abstract'; then
+    PARAMS="${PARAMS} --aic-abstract"
+fi
 if bashio::config.true 'download_high_res'; then
     PARAMS="${PARAMS} --download-high-res"
 fi

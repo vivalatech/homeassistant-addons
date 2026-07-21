@@ -14,6 +14,12 @@ configuration:
   media_folder:
     name: Media Folder
     description: Upload images from the /media/frame folder
+  openverse:
+    name: Openverse
+    description: Download a random contemporary abstract/illustration image from Openverse (excludes photos)
+  aic_abstract:
+    name: Art Institute of Chicago (Abstract)
+    description: Download a random public-domain abstract artwork from the Art Institute of Chicago
   same_image:
     name: Same Image
     description: Use the same image for all TVs when multiple TVs are specified

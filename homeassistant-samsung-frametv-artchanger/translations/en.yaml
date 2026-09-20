@@ -5,6 +5,30 @@ configuration:
   google_art: 
     name: Google Art
     description: Download a random image from Google Art
+  google_color:
+    name: Google Art color
+    description: Fallback color when no Home Assistant color helper is available
+  google_color_entity:
+    name: Color helper
+    description: Home Assistant input_select entity for the color filter
+  google_museum:
+    name: Google Art museum
+    description: Fallback museum when no Home Assistant museum helper is available
+  google_museum_entity:
+    name: Museum helper
+    description: Home Assistant input_select entity for the museum filter
+  google_style:
+    name: Google Art style or period
+    description: Fallback style when no Home Assistant style helper is available
+  google_style_entity:
+    name: Style helper
+    description: Home Assistant input_select entity for the style or period filter
+  google_landscape_only:
+    name: Landscape artworks only
+    description: Skip portrait and square Google Art works before downloading the high-resolution image
+  google_tv_format_only:
+    name: Borderless TV format only
+    description: Prefer Google Art close to 16:9; fall back to preserved-aspect landscape art when enabled and no strict match is found
   download_high_res: 
     name: High Res 
     description: Get high res image from Google Art using dezoomify
@@ -14,6 +38,9 @@ configuration:
   media_folder:
     name: Media Folder
     description: Upload images from the /media/frame folder
+  preserve_aspect_ratio:
+    name: Preserve complete artwork
+    description: Fit the complete image on a black 16:9 canvas instead of cropping it
   same_image:
     name: Same Image
     description: Use the same image for all TVs when multiple TVs are specified

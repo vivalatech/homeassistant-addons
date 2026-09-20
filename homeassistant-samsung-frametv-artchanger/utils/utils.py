@@ -1,5 +1,5 @@
 from io import BytesIO
-from PIL import Image
+from PIL import Image, ImageOps
 from typing import List, Dict, Optional
 
 class Utils:
@@ -9,34 +9,45 @@ class Utils:
         self.check_tv_ip = len(tvips.split(',')) > 1 if tvips else False #only check the tv_ip if there is more than one tv_ip
 
     @staticmethod
-    def resize_and_crop_image(image_data, target_width=3840, target_height=2160):
-        with Image.open(image_data) as img:
-            # Calculate the aspect ratio
-            img_ratio = img.width / img.height
-            target_ratio = target_width / target_height
+    def resize_and_pad_image(image_data, target_width=3840, target_height=2160):
+        """Fit the complete image onto a black 16:9 canvas without cropping it."""
+        with Image.open(image_data) as source_image:
+            img = ImageOps.exif_transpose(source_image)
+            scale = min(target_width / img.width, target_height / img.height)
+            new_width = max(1, round(img.width * scale))
+            new_height = max(1, round(img.height * scale))
+            img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
 
-            if img_ratio > target_ratio:
-                # Image is wider than target, resize based on height
-                new_height = target_height
-                new_width = int(new_height * img_ratio)
+            canvas = Image.new('RGB', (target_width, target_height), 'black')
+            left = (target_width - new_width) // 2
+            top = (target_height - new_height) // 2
+
+            if img.mode in ('RGBA', 'LA') or (
+                img.mode == 'P' and 'transparency' in img.info
+            ):
+                img = img.convert('RGBA')
+                canvas.paste(img, (left, top), img)
             else:
-                # Image is taller than target, resize based on width
-                new_width = target_width
-                new_height = int(new_width / img_ratio)
+                canvas.paste(img.convert('RGB'), (left, top))
 
-            # Resize the image
-            img = img.resize((new_width, new_height), Image.LANCZOS)
+            output = BytesIO()
+            canvas.save(output, format='JPEG', quality=90)
+            output.seek(0)
+            return output
 
-            # Calculate dimensions for center cropping
+    @staticmethod
+    def resize_and_crop_image(image_data, target_width=3840, target_height=2160):
+        """Fill the 16:9 canvas and crop only when the user opts into it."""
+        with Image.open(image_data) as source_image:
+            img = ImageOps.exif_transpose(source_image).convert('RGB')
+            scale = max(target_width / img.width, target_height / img.height)
+            new_width = max(1, round(img.width * scale))
+            new_height = max(1, round(img.height * scale))
+            img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
             left = (new_width - target_width) // 2
             top = (new_height - target_height) // 2
-            right = left + target_width
-            bottom = top + target_height
+            img = img.crop((left, top, left + target_width, top + target_height))
 
-            # Perform center crop
-            img = img.crop((left, top, right, bottom))
-
-            # Save the processed image to a BytesIO object
             output = BytesIO()
             img.save(output, format='JPEG', quality=90)
             output.seek(0)

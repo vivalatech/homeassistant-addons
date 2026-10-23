@@ -57,11 +57,15 @@ use_same_image = args.same_image
 utils = Utils(args.tvip, uploaded_files)
 
 def process_tv(tv_ip: str, image_data: BytesIO, file_type: str, image_url: str, remote_filename: str, source_name: str):
-    tv = SamsungTVWS(tv_ip)
-    
+    tv = SamsungTVWS(tv_ip, timeout=10)
+
     # Check if TV supports art mode
-    if not tv.art().supported():
-        logging.warning(f'TV at {tv_ip} does not support art mode.')
+    try:
+        if not tv.art().supported():
+            logging.warning(f'TV at {tv_ip} does not support art mode.')
+            return
+    except Exception as e:
+        logging.error(f'TV at {tv_ip} is unreachable: {e}')
         return
 
     if remote_filename is None:
@@ -123,11 +127,17 @@ def save_debug_image(image_data: BytesIO, filename: str) -> None:
 if tvip:
     if len(tvip) > 1 and use_same_image:
         image_data, file_type, image_url, remote_filename, source_name = get_image_for_tv(None)
+        if image_data is None and remote_filename is None:
+            logging.error('No image available, skipping all TVs')
+            sys.exit(1)
         for tv_ip in tvip:
             process_tv(tv_ip, image_data, file_type, image_url, remote_filename, source_name)
     else:
         for tv_ip in tvip:
             image_data, file_type, image_url, remote_filename, source_name = get_image_for_tv(tv_ip)
+            if image_data is None and remote_filename is None:
+                logging.error(f'No image available for TV at {tv_ip}, skipping')
+                continue
             process_tv(tv_ip, image_data, file_type, image_url, remote_filename, source_name)
 else:
     logging.error('No TV IP addresses specified. Please use --tvip')
